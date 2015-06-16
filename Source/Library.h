@@ -1,10 +1,13 @@
-#ifndef LIBRARY_H
-#define LIBRARY_H
+#pragma once
+
+#include "Database.h"
 
 #include <QWidget>
+#include <QProcess>
 
-namespace Ui {
-class Library;
+namespace Ui
+{
+    class Library;
 }
 
 class Library : public QWidget
@@ -12,16 +15,23 @@ class Library : public QWidget
     Q_OBJECT
 
 public:
-    explicit Library(QWidget *parent = 0);
+    Library(Database db);
     ~Library();
 
 private slots:
     void on_testLaunch_clicked();
+    void on_addGame_clicked();
+    void finished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onLaunchError(QProcess::ProcessError error);
+
+    void on_removeGame_clicked();
 
 private:
-    Ui::Library *ui;
+    Database db;
+    Ui::Library* ui;
+    QProcess* runningProcess;
 
-    void runProcess(QString file);
+    bool isProcessRunning() const;
+    void runProcess(QString file, QString workingDirectory);
+    void refreshGames();
 };
-
-#endif // LIBRARY_H
